@@ -235,8 +235,11 @@ def run_standalone(port: int = 8000):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    if has_fastapi and "uvicorn" in sys.modules:
-        import uvicorn
-        uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
+    if has_fastapi and app is not None:
+        try:
+            import uvicorn
+            uvicorn.run(app, host="0.0.0.0", port=port)
+        except Exception:
+            run_standalone(port)
     else:
         run_standalone(port)
