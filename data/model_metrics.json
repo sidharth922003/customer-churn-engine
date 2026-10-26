@@ -1,0 +1,54 @@
+{
+  "model_name": "GradientBoostedTrees + SHAP TreeExplainer",
+  "total_dataset_size": 10000,
+  "train_set_size": 8000,
+  "test_set_size": 2000,
+  "accuracy": 0.7675,
+  "precision": 0.5262,
+  "recall": 0.6081,
+  "f1_score": 0.5642,
+  "roc_auc": 0.8086,
+  "confusion_matrix": {
+    "true_positives": 301,
+    "false_positives": 271,
+    "true_negatives": 1234,
+    "false_negatives": 194
+  },
+  "feature_importances": [
+    {
+      "feature": "contract_type",
+      "importance": 0.32,
+      "direction": "Positive (+Risk for Month-to-month)"
+    },
+    {
+      "feature": "support_tickets_90d",
+      "importance": 0.26,
+      "direction": "Positive (+Risk for repeated tickets)"
+    },
+    {
+      "feature": "tenure_months",
+      "importance": 0.22,
+      "direction": "Bipolar (-Risk for tenure > 3 yrs, +Risk for < 6 mos)"
+    },
+    {
+      "feature": "days_since_last_login",
+      "importance": 0.18,
+      "direction": "Positive (+Risk for inactivity > 14 days)"
+    },
+    {
+      "feature": "failed_transactions_90d",
+      "importance": 0.15,
+      "direction": "Positive (+Risk for payment decline)"
+    },
+    {
+      "feature": "avg_daily_usage_mins",
+      "importance": 0.12,
+      "direction": "Negative (-Risk for power users > 90 min/day)"
+    },
+    {
+      "feature": "has_auto_renew",
+      "importance": 0.08,
+      "direction": "Negative (-Risk when enabled)"
+    }
+  ]
+}

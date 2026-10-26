@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChurnGuard AI — Customer Retention & Explainability Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #0b1120;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-coral: #f43f5e;
+      --accent-emerald: #10b981;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-icon {
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      padding: 0.35rem 0.65rem;
+      border-radius: 10px;
+    }
+    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .subtitle { font-size: 0.8rem; color: var(--text-muted); }
+    .header-badges { display: flex; gap: 0.5rem; }
+    .tech-pill {
+      background: rgba(6, 182, 212, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    /* Layout Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Presets */
+    .presets-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .preset-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .preset-btn:hover {
+      color: #fff;
+      border-color: var(--accent-cyan);
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+    }
+    .form-label { font-weight: 600; color: #e2e8f0; }
+    .form-val { font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700; }
+    
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-input);
+      border-radius: 9999px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+
+    select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+
+    .btn-predict {
+      width: 100%;
+      background: linear-gradient(135deg, #06b6d4, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);
+      transition: transform 0.15s ease;
+      margin-top: 0.5rem;
+    }
+    .btn-predict:hover { transform: translateY(-1px); }
+
+    /* Prediction Results */
+    .gauge-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--bg-input);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+    .gauge-percent {
+      font-family: var(--font-mono);
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .tier-badge {
+      display: inline-block;
+      padding: 0.3rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+    .tier-high { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .tier-low { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .tier-med { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    /* SHAP Waterfall Attribution */
+    .shap-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .factor-item {
+      background: var(--bg-input);
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 0.65rem;
+      border: 1px solid var(--border-color);
+    }
+    .factor-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .impact-pos { color: #f43f5e; font-family: var(--font-mono); }
+    .impact-neg { color: #10b981; font-family: var(--font-mono); }
+    .factor-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Action Box */
+    .action-box {
+      background: rgba(6, 182, 212, 0.1);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-top: 1.25rem;
+    }
+    .action-label { font-size: 0.7rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.25rem; }
+    .action-text { font-size: 0.85rem; color: #fff; line-height: 1.4; }
+
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <h1>ChurnGuard AI</h1>
+          <p class="subtitle">Customer Retention & Shapley Value (SHAP) Explainability Engine</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="tech-pill">Python</span>
+        <span class="tech-pill">XGBoost</span>
+        <span class="tech-pill">SHAP Explainability</span>
+        <span class="tech-pill">FastAPI</span>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Input Panel -->
+      <div class="card">
+        <div class="card-title">Customer Behavioral Telemetry</div>
+        <p class="card-sub">Adjust parameters or pick a preset persona</p>
+
+        <div class="presets-row">
+          <button class="preset-btn" onclick="applyPreset('churner')">🔴 Likely Churner</button>
+          <button class="preset-btn" onclick="applyPreset('loyal')">🟢 Loyal Power User</button>
+          <button class="preset-btn" onclick="applyPreset('neutral')">🟡 Average User</button>
+        </div>
+
+        <form id="predictForm" onsubmit="handlePredict(event)">
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Account Tenure (Months)</span>
+              <span class="form-val" id="val_tenure">4 mos</span>
+            </div>
+            <input type="range" id="tenure" min="1" max="60" value="4" oninput="updateVal('tenure', this.value + ' mos')">
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Contract Type</span>
+            </div>
+            <select id="contract_type">
+              <option value="Month-to-month" selected>Month-to-month (Flexible)</option>
+              <option value="One year">One year commitment</option>
+              <option value="Two year">Two year commitment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Support Tickets (Last 90d)</span>
+              <span class="form-val" id="val_tickets">4 tickets</span>
+            </div>
+            <input type="range" id="tickets" min="0" max="8" value="4" oninput="updateVal('tickets', this.value + ' tickets')">
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Failed Billing Transactions</span>
+              <span class="form-val" id="val_failed">2 failures</span>
+            </div>
+            <input type="range" id="failed" min="0" max="4" value="2" oninput="updateVal('failed', this.value + ' failures')">
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Days Since Last Login</span>
+              <span class="form-val" id="val_days">18 days</span>
+            </div>
+            <input type="range" id="days_inactive" min="0" max="45" value="18" oninput="updateVal('days', this.value + ' days')">
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Daily App Usage (Minutes)</span>
+              <span class="form-val" id="val_usage">22 mins</span>
+            </div>
+            <input type="range" id="usage" min="5" max="180" value="22" oninput="updateVal('usage', this.value + ' mins')">
+          </div>
+
+          <div class="form-group">
+            <div class="form-row">
+              <span class="form-label">Monthly Recurring Spend ($)</span>
+              <span class="form-val" id="val_monthly">$85.50</span>
+            </div>
+            <input type="range" id="monthly" min="20" max="150" value="85" oninput="updateVal('monthly', '$' + this.value)">
+          </div>
+
+          <button type="submit" class="btn-predict">⚡ Calculate Churn Risk & Explain</button>
+        </form>
+      </div>
+
+      <!-- Results & SHAP Attribution Panel -->
+      <div class="card">
+        <div class="card-title">Real-Time Prediction & Explainability</div>
+        <p class="card-sub">Shapley feature attribution decomposing model inference</p>
+
+        <div class="gauge-card">
+          <div class="gauge-percent" id="probPercent">84.2%</div>
+          <span class="tier-badge tier-high" id="tierBadge">HIGH CHURN RISK</span>
+        </div>
+
+        <div class="shap-section-title">
+          <span>Top Feature Attributions (SHAP)</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Impact on Risk</span>
+        </div>
+
+        <div id="factorsContainer">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div class="action-box">
+          <div class="action-label">Recommended Retention Playbook</div>
+          <p class="action-text" id="actionText">
+            Trigger proactive billing recovery workflow: Send a 1-click update link with a $10 grace-period bill waiver.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateVal(id, text) {
+      document.getElementById('val_' + id).innerText = text;
+    }
+
+    function applyPreset(type) {
+      if (type === 'churner') {
+        document.getElementById('tenure').value = 3; updateVal('tenure', '3 mos');
+        document.getElementById('contract_type').value = 'Month-to-month';
+        document.getElementById('tickets').value = 4; updateVal('tickets', '4 tickets');
+        document.getElementById('failed').value = 2; updateVal('failed', '2 failures');
+        document.getElementById('days_inactive').value = 20; updateVal('days', '20 days');
+        document.getElementById('usage').value = 15; updateVal('usage', '15 mins');
+        document.getElementById('monthly').value = 95; updateVal('monthly', '$95');
+      } else if (type === 'loyal') {
+        document.getElementById('tenure').value = 42; updateVal('tenure', '42 mos');
+        document.getElementById('contract_type').value = 'Two year';
+        document.getElementById('tickets').value = 0; updateVal('tickets', '0 tickets');
+        document.getElementById('failed').value = 0; updateVal('failed', '0 failures');
+        document.getElementById('days_inactive').value = 1; updateVal('days', '1 days');
+        document.getElementById('usage').value = 110; updateVal('usage', '110 mins');
+        document.getElementById('monthly').value = 55; updateVal('monthly', '$55');
+      } else {
+        document.getElementById('tenure').value = 14; updateVal('tenure', '14 mos');
+        document.getElementById('contract_type').value = 'One year';
+        document.getElementById('tickets').value = 1; updateVal('tickets', '1 tickets');
+        document.getElementById('failed').value = 0; updateVal('failed', '0 failures');
+        document.getElementById('days_inactive').value = 5; updateVal('days', '5 days');
+        document.getElementById('usage').value = 50; updateVal('usage', '50 mins');
+        document.getElementById('monthly').value = 65; updateVal('monthly', '$65');
+      }
+      handlePredict(new Event('submit'));
+    }
+
+    async function handlePredict(e) {
+      if (e) e.preventDefault();
+
+      const payload = {
+        tenure_months: parseInt(document.getElementById('tenure').value),
+        contract_type: document.getElementById('contract_type').value,
+        support_tickets_90d: parseInt(document.getElementById('tickets').value),
+        failed_transactions_90d: parseInt(document.getElementById('failed').value),
+        days_since_last_login: parseInt(document.getElementById('days_inactive').value),
+        avg_daily_usage_mins: parseFloat(document.getElementById('usage').value),
+        monthly_charges: parseFloat(document.getElementById('monthly').value),
+        has_auto_renew: document.getElementById('contract_type').value === 'Month-to-month' ? 0 : 1
+      };
+
+      try {
+        const res = await fetch('/api/v1/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        console.error('Error fetching prediction:', err);
+      }
+    }
+
+    function renderResults(data) {
+      const pct = (data.churn_probability * 100).toFixed(1) + '%';
+      const probElem = document.getElementById('probPercent');
+      probElem.innerText = pct;
+
+      const badge = document.getElementById('tierBadge');
+      if (data.risk_tier === 'HIGH') {
+        badge.className = 'tier-badge tier-high';
+        badge.innerText = '🔴 HIGH CHURN RISK';
+        probElem.style.color = '#f43f5e';
+      } else if (data.risk_tier === 'LOW') {
+        badge.className = 'tier-badge tier-low';
+        badge.innerText = '🟢 LOW CHURN RISK (RETAINED)';
+        probElem.style.color = '#10b981';
+      } else {
+        badge.className = 'tier-badge tier-med';
+        badge.innerText = '🟡 MODERATE CHURN RISK';
+        probElem.style.color = '#f59e0b';
+      }
+
+      const factorsList = document.getElementById('factorsContainer');
+      factorsList.innerHTML = '';
+
+      data.top_risk_factors.forEach(f => {
+        const isPos = f.impact_score > 0;
+        const sign = isPos ? '+' : '';
+        const colorClass = isPos ? 'impact-pos' : 'impact-neg';
+        
+        const div = document.createElement('div');
+        div.className = 'factor-item';
+        div.innerHTML = `
+          <div class="factor-header">
+            <span>${f.feature}</span>
+            <span class="${colorClass}">${sign}${f.impact_score}% Risk</span>
+          </div>
+          <p class="factor-desc">${f.explanation}</p>
+        `;
+        factorsList.appendChild(div);
+      });
+
+      document.getElementById('actionText').innerText = data.retention_action;
+    }
+
+    // Auto-predict on initial load
+    window.onload = () => handlePredict();
+  </script>
+</body>
+</html>
