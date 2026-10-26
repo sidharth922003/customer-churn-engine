@@ -221,9 +221,10 @@ def run_standalone(port: int = 8000):
     server = HTTPServer(('0.0.0.0', port), StandaloneHandler)
     print("=" * 65)
     print(f"🚀 ChurnGuard AI Engine is running at: http://localhost:{port}")
-    print("   API Docs / Endpoint: POST http://localhost:{port}/api/v1/predict")
-    print("   Model Metrics:        GET  http://localhost:{port}/api/v1/metrics")
-    print("   Health Check:         GET  http://localhost:{port}/api/v1/health")
+    print(f"   Dashboard UI:         GET  http://localhost:{port}/")
+    print(f"   API Prediction:       POST http://localhost:{port}/api/v1/predict")
+    print(f"   Model Metrics:        GET  http://localhost:{port}/api/v1/metrics")
+    print(f"   Health Check:         GET  http://localhost:{port}/api/v1/health")
     print("=" * 65)
     try:
         server.serve_forever()
